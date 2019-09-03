@@ -1,3 +1,7 @@
+#source
+# https://pythonprogramming.net/open-cv-basics-python-plays-gta-v/?completed=/game-frames-open-cv-python-plays-gta-v/
+
+
 import numpy as np
 from PIL import ImageGrab
 import cv2
