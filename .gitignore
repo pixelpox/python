@@ -1,3 +1,13 @@
 magpi-downloader/*.pdf
 .DS_Store
 .vscode/settings.json
+*.xls
+*.csv
+*.pyc
+steam/output.txt
+steam/output1.html
+ocr-with-opencv/screenshot/ADBScreenshot.png
+ocr-with-opencv/screenshot/ADBScreenshot.1.png
+ocr-with-opencv/ADBScreenshot.png
+ocr-with-opencv/crop.png
+ocr-with-opencv/graytemp.png
