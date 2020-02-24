@@ -40,27 +40,51 @@ def get_tweets_data(username, soup):
     tweets_list = list()
     tweets_list.extend(get_this_page_tweets(soup))
 
-def ppGetIdsFromJSON(soup):
+
+def processTwitterPage(arrTweets , browser):
+
+    page = browser.get_current_page()
+    links = browser.get_current_page().find_all('a')
+
+    #get all tweet cards
+    tags = browser.get_current_page().findAll("div", class_="tweet")
+
+
+    for tag in tags:
+        tweetId = tag.get('data-conversation-id')
+        ps = tag.find_all('p')
+
+        for p in ps:
+            tweetText = p.get_text()
+            if tweetText.find("REMINDER:") != -1:
+                record = [tweetId, "DELETE" , tweetText]
+            else:
+                record = [tweetId, "" , tweetText]
+            
+            arrTweets.append(record)
+    return arrTweets
+
+
+def ppGetIdsFromJSON(soup , arrTweets2):
     tweets = soup.find_all("li")
 
     #1215713752894537728
     for tweet in tweets:
-        print("\n================================")
-        print(tweet.get('data-item-id'))
         if tweet.get('data-item-id') != None:
-            print("tweet")
             ps = tweet.find_all('p')
 
             for p in ps:
-               tweetText = p.get_text()
-               if tweetText.find("REMINDER:") != -1:
-                    print("DELETE")
-            print(tweetText)
-        print("\n================================")
+                tweetText = p.get_text()
+                if tweetText.find("REMINDER:") != -1:
+                    record = [tweet.get('data-item-id') , "DELETE" , tweetText]
+                    arrTweets2.append(record)
+    
+    return arrTweets2
 
 
 
 def getMoreTweets(browser , twitterUsername):
+    arrTweets2 = []
     tweets_list = list()
     next_pointer = browser.get_current_page().find("div", {"class": "stream-container"})["data-min-position"]
 
@@ -87,17 +111,17 @@ def getMoreTweets(browser , twitterUsername):
         next_pointer = tweets_obj["min_position"]
         html = tweets_obj["items_html"]
         soup = BeautifulSoup(html, 'lxml')
-        ppGetIdsFromJSON(soup)
+
+        arrTweets2 = ppGetIdsFromJSON(soup , arrTweets2)
         #tweets_list.extend(get_this_page_tweets(soup))
 
-        return tweets_list
+    return arrTweets2
 
 
 ############################################################################################
 twitterUsername = "shhmakers"
 browser = mechanicalsoup.StatefulBrowser()
 browser.open("https://twitter.com/"+twitterUsername)
-page = browser.get_current_page()
 #browser.launch_browser()
 arrTweets = []
 
@@ -107,29 +131,14 @@ arrTweets = []
 #another page 2 example 1220402122602225665
 
 
-links = browser.get_current_page().find_all('a')
-
-#get all tweet cards
-tags = browser.get_current_page().findAll("div", class_="tweet")
 
 
-for tag in tags:
-    tweetId = tag.get('data-conversation-id')
-    ps = tag.find_all('p')
 
-    for p in ps:
-        tweetText = p.get_text()
-        if tweetText.find("REMINDER:") != -1:
-            record = [tweetId, "DELETE" , tweetText]
-        else:
-            record = [tweetId, "" , tweetText]
-        
-        arrTweets.append(record)
-
-
-#tweets_list = getMoreTweets(browser , twitterUsername)
+arrTweets = processTwitterPage(arrTweets , browser)
+arrTweets2 = getMoreTweets(browser , twitterUsername)
 
 
 with open('C:\\Users\\simon\\git\\python\\twitterTerminator\\tweets.csv', 'w', newline='') as file:
     writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
     writer.writerows(arrTweets)
+    writer.writerows(arrTweets2)
