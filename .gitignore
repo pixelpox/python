@@ -1,3 +1,5 @@
 magpi-downloader/*.pdf
 .DS_Store
 .vscode/settings.json
+readGoogleCalender/credentials.json
+readGoogleCalender/token.pickle
