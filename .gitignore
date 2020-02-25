@@ -11,3 +11,6 @@ ocr-with-opencv/screenshot/ADBScreenshot.1.png
 ocr-with-opencv/ADBScreenshot.png
 ocr-with-opencv/crop.png
 ocr-with-opencv/graytemp.png
+tweetForMe/.env
+readGoogleCalender/credentials.json
+readGoogleCalender/token.pickle
